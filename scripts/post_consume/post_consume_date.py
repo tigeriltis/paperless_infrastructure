@@ -60,7 +60,6 @@ def parseFileName(filename: str):
     # 2: (.*) is the rest of the filename, by definition my title, e.g. "Bill for December 2022"
     # So we need to take care about matching group 1 and 2
 
-
     findings = pattern.match(filename)
     if findings:
         date_extracted          = findings.group(1)
@@ -87,15 +86,15 @@ def parseFileName(filename: str):
 
             date_extracted = f"{year}-{month}-{day}"
 
-    print("Result of RegExp:")
+    print("Result of RegExp for:", filename)
 
-    if date_extracted == None:
-        print("No Date found! Exiting")
-        sys.exit()
+#    if date_extracted == None:
+#        print("No Date found! Exiting")
+#        sys.exit()
 
-    if title_extracted == None:
-        print("No Title found! Exiting")
-        sys.exit()
+#    if title_extracted == None:
+#        print("No Title found! Exiting")
+#        sys.exit()
 
     print(f"Date extracted         : '{date_extracted}'")
     print(f"Doc title extracted    : '{title_extracted}'")
@@ -112,13 +111,6 @@ if __name__ == "__main__":
         # Set tokens for the appropriate header auth
         set_auth_tokens(PAPERLESS_URL, API_AUTH_TOKEN, sess, SESSION_TIMEOUT)
 
-## DEBUG
-#        # Query the API for debugging document info
-#        doc_pk = 859
-#        api_route_document = f"{PAPERLESS_URL}/api/documents/{doc_pk}/"
-#        doc_info = _get_resp_data(api_route_document, sess, SESSION_TIMEOUT)
-#        print(doc_info)
-
         # Get the PK as provided via post-consume
         doc_pk = int(os.environ["DOCUMENT_ID"])
 
@@ -130,12 +122,26 @@ if __name__ == "__main__":
         doc_title = doc_info["title"]
         print(f"Post-processing input file: '{doc_title}'...")
 
-## DEBUG
-#        print(doc_info)
-
         # parse file name for date_created, correspondent and title for the document:
         extracted_date, extracted_title = parseFileName(doc_title)
 
+        # if the file name did not yield an extracted_date and _title, look at the tag names
+        if extracted_date == None or extracted_title == None: 
+            for doctag_id in doc_info['tags']:
+                api_route_doctag = f"{PAPERLESS_URL}/api/tags/{doctag_id}/"
+                tag_info         = get_resp_data(api_route_doctag, sess, SESSION_TIMEOUT)
+                tag_extracted_date, tag_extracted_title = parseFileName(tag_info['name'])
+                if tag_extracted_date != None and tag_extracted_title != None:
+                    ## if a tag yields a useable date, then use it and stop looking at the following tags, but keep the document title as is
+                    extracted_date  = tag_extracted_date
+                    extracted_title = doc_info['title']
+                    break
+        if extracted_date == None or extracted_title == None:
+            ## exit if I could not find a new date for this document
+            sys.exit()
+
+        ## at this point we have discovered a new date and title in either the filename or one of the tag names
+        
         # Clean up title formatting
         new_doc_title = extracted_title.replace("_", " ")
 
