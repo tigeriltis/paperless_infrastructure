@@ -18,7 +18,7 @@ PAPERLESS_URL        = os.getenv("PAPERLESS_URL", "http://localhost:8000")
 SESSION_TIMEOUT      = 5.0
 #SESSION_TIMEOUT      = float(os.getenv("SESSION_TIMEOUT", 5.0))
 
-
+#TAGS_TO_COPY                  = '["Project1", "Project2", "Project3"]'
 TAGS_TO_COPY                  = json.loads(os.getenv("TAGS_TO_COPY"))
 #CUSTOM_FIELD_TARGET           = "Project"
 CUSTOM_FIELD_TARGET           = os.getenv("CUSTOM_FIELD_TARGET")
