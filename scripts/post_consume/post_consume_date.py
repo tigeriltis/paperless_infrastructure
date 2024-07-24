@@ -28,7 +28,7 @@ SESSION_TIMEOUT      = 5.0
 CONSUMED_TITLE       = "Consumed_Title"
 CONSUMED_CREATEDDATE = "Consumed_Created_Date"
 ADD_TAG              = True
-MODIFIED_TAG         = "Post_Consumption_Modified_" + SCRIPT_VERSION
+MODIFIED_TAG         = "Post_Consume_Modified_" + SCRIPT_VERSION
 
 #######################################################
 # Filename parsing
