@@ -15,7 +15,7 @@ load_dotenv()
 # Credentials
 API_AUTH_TOKEN = os.getenv("API_AUTH_TOKEN")
 # Connection info
-#PAPERLESS_URL = os.getenv("PAPERLESS_URL", "http://localhost:8000")
+PAPERLESS_URL = os.getenv("PAPERLESS_URL", "http://localhost:8000")
 #SESSION_TIMEOUT = float(os.getenv("SESSION_TIMEOUT", 5.0))
 # Tagging
 #ADD_TAG = bool(os.getenv("ADD_TAG", True))
