@@ -93,7 +93,7 @@ def createItemByName(item_name: str, route: str, session: httpx.Client, timeout:
 
     # Create item at given route
     data = {"name": item_name} | data
-    response = session.post(route, data=data, timeout=timeout)
+    response = session.post(route, json=data, timeout=timeout)
     response.raise_for_status();
 
     new_item_id = response.json()["id"]

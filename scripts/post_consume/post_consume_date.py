@@ -54,11 +54,12 @@ def parseFileName(filename: str):
     date_extracted = None
     title_extracted = None
 
-    # V3 of my matching regexp
-    pattern = re.compile(r'(\d{8}|\d{6}|\d{4})_(.*)')
+    pattern = re.compile(r'(\d{8}|\d{6}|\d{4})[a-z]?_(.*)')
     # 1: \d{8}|\d{6}|\d{4} is the date as 20231222 or 230122 or 2301 meaning 2023-January-22nd or 2023-Jannuary.
+    #  : [a-z]? is any one or none lower chase charater, which I use when there is more than one version of a document on the same day
     # 2: (.*) is the rest of the filename, by definition my title, e.g. "Bill for December 2022"
     # So we need to take care about matching group 1 and 2
+
 
     findings = pattern.match(filename)
     if findings:
@@ -161,8 +162,8 @@ if __name__ == "__main__":
         customfield_consumed_createddate   = getOrCreateCustomFieldIDByName(CONSUMED_CREATEDDATE,  sess, SESSION_TIMEOUT)
         ## Proper format for a document with more than one custom string field: 'custom_fields': [{'value': None, 'field': 3}, {'value': None, 'field': 2}, {'value': None, 'field': 1}]}
         data['custom_fields'] = doc_info['custom_fields'] + [
-            {'value':doc_info["title"],       'field':customfield_consumed_title},
-            {'value':doc_info["created_date"],'field':customfield_consumed_createddate}
+                {'value':doc_info["title"],       'field':customfield_consumed_title},
+                {'value':doc_info["created_date"],'field':customfield_consumed_createddate}
             ]
 
         # Print status
