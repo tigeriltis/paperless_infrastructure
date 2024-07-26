@@ -15,8 +15,8 @@ API_AUTH_TOKEN       = os.getenv("API_AUTH_TOKEN")
 # Connection info
 #PAPERLESS_URL        = "http://localhost:8000" # use the internal url!
 PAPERLESS_URL        = os.getenv("PAPERLESS_URL", "http://localhost:8000")
-SESSION_TIMEOUT      = 5.0
-#SESSION_TIMEOUT      = float(os.getenv("SESSION_TIMEOUT", 5.0))
+SESSION_TIMEOUT      = float(os.getenv("SESSION_TIMEOUT", 15.0))
+SESSION_TIMEOUT      = 30.0
 
 #TAGS_TO_COPY                  = '["Project1", "Project2", "Project3"]'
 TAGS_TO_COPY                  = json.loads(os.getenv("TAGS_TO_COPY"))
@@ -66,8 +66,12 @@ if __name__ == "__main__":
 ##DEBUG VERY VERBOSE
 #        print("Documents: " + str(documents))
 
-        print("Number of documents with tag_id " + str(tag_info['id']) + " is: " + str(len(documents['results'])))
-        for document in documents['results']:
+        ## cannot use documents['results'] because this only has the 25 first results
+        ## have to use documents['all'], which is a list of document_ids and documents['count'], which is equal to len(documents['all'])
+        print("Number of documents with tag_id " + str(tag_info['id']) + " is: " + str(documents['count']))
+        for document_id in documents['all']:
+            api_route_document = f"{PAPERLESS_URL}/api/documents/{document_id}/"
+            document = get_resp_data(api_route_document, sess, SESSION_TIMEOUT)
             # for every document with that tag copy that to the custom field
             # do not overwrite the custom field if it already has content, unless CUSTOM_FIELD_TARGET_OVERWRITE == True
             print(" ---------------------------------------------------------------")
