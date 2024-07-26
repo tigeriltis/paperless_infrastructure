@@ -120,7 +120,7 @@ if __name__ == "__main__":
 
         # Extract the currently assigned values
         doc_title = doc_info["title"]
-        print(f"Post-processing input file: '{doc_title}'...")
+        print(f"Post-processing input file for create date: '{doc_title}'...")
 
         # parse file name for date_created, correspondent and title for the document:
         extracted_date, extracted_title = parseFileName(doc_title)
@@ -173,11 +173,11 @@ if __name__ == "__main__":
             ]
 
         # Print status
-        print("Regexp Matching was successful!")
-        print(f"Title:         '{new_doc_title}'")
-        print(f"Date created:  '{extracted_date}'")
-        print(f"Tag IDs:       '{str(new_doc_tags)}'")
-        print(f"New Data:      '{data}'")
+        #print("Regexp Matching was successful!")
+        #print(f"Title:         '{new_doc_title}'")
+        #print(f"Date created:  '{extracted_date}'")
+        #print(f"Tag IDs:       '{str(new_doc_tags)}'")
+        #print(f"New Data:      '{data}'")
 
         # Update the document
         resp = sess.patch(api_route_document, json=data, timeout=SESSION_TIMEOUT)

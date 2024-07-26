@@ -5,6 +5,7 @@ import httpx
 import os
 import re
 import sys
+import json
 
 PAPERLESS_URL = "" # do NOT change this here, it is set via set_auth_thokens
 SESSION_TIMEOUT = 5.0
@@ -52,13 +53,13 @@ def getItemIDByName(item_name: str, route: str, session: httpx.Client, timeout: 
 
     # If no item exists, return None
     if response_count == 0:
-        print(f"No existing id found for item '{item_name}'.")
+        #print(f"No existing id found for item '{item_name}'.")
         return None
 
     # If one item exists, return that
     elif response_count == 1:
         new_item_id = response_data["results"][0]['id']
-        print(f"Found existing id '{str(new_item_id)}' for item: '{item_name}'")
+        #print(f"Found existing id '{str(new_item_id)}' for item: '{item_name}'")
         return new_item_id
 
     # If multiple items exist, return the first and print a warning
@@ -97,7 +98,7 @@ def createItemByName(item_name: str, route: str, session: httpx.Client, timeout:
     response.raise_for_status();
 
     new_item_id = response.json()["id"]
-    print(f"Item '{item_name}' created with id: '{str(new_item_id)}'")
+    #print(f"Item '{item_name}' created with id: '{str(new_item_id)}'")
 
     # If no new_item_id has been returned, something went wrong - do not process further
     if new_item_id == None:
@@ -141,7 +142,7 @@ def getOrCreateTagIDByName(item_name: str, session: httpx.Client, timeout: float
 
     # If no existing ID found, create
     if existing_id == None:
-        print(f"No item found with name: '{item_name}'; creating...")
+        #print(f"No item found with name: '{item_name}'; creating...")
         existing_id = createTagByName(item_name, session, timeout, skip_existing_check = True)
     return existing_id
 
@@ -153,6 +154,6 @@ def getOrCreateCustomFieldIDByName(item_name: str, session: httpx.Client, timeou
 
     # If no existing ID found, create
     if existing_id == None:
-        print(f"No item found with name: '{item_name}'; creating...")
+        #print(f"No item found with name: '{item_name}'; creating...")
         existing_id = createCustomFieldByName(item_name, session, timeout, skip_existing_check = True)
     return existing_id
