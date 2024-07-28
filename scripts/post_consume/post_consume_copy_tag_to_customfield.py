@@ -1,19 +1,36 @@
+import os,sys
 import httpx
-import os
 import re
-import sys
 from dotenv import load_dotenv
+## split returns the path in-front and the last part of the path (can be filename or directory)
+## innersplit removes filename, outersplit removes last part of dir and thus returns parent dir
+ENV_FILE                     = os.path.split(os.path.split(__file__)[0])[0] + "/.env"
+PAPERLESS_PYTHON_MODULE_PATH = os.path.split(os.path.split(__file__)[0])[0]
+sys.path.append(PAPERLESS_PYTHON_MODULE_PATH)
 from paperless import *
 
 SCRIPT_VERSION       = "v1.0"
 
-load_dotenv()
+load_dotenv(ENV_FILE)
 
 # Credentials
 API_AUTH_TOKEN = os.getenv("API_AUTH_TOKEN")
 # Connection info
 PAPERLESS_URL = os.getenv("PAPERLESS_URL", "http://localhost:8000")
 SESSION_TIMEOUT = float(os.getenv("SESSION_TIMEOUT", 5.0))
+
+
+## Verify the minimum requirements to get anything done
+if API_AUTH_TOKEN == None:
+    raise Exception("API_AUTH_TOKEN not set. Quit.")
+if PAPERLESS_URL == None:
+    raise Exception("PAPERLESS_URL not set. Quit.")
+
+## DEBUGGING
+#print ("This '" + __file__ + "' is. Version: " + str(SCRIPT_VERSION))
+#print (".env file path: "                  + str(ENV_FILE))
+#print ("Token: "                           + str(API_AUTH_TOKEN))
+#print ("PAPERLESS_PYTHON_MODULE_PATH: "    + str(PAPERLESS_PYTHON_MODULE_PATH))
 
 def copy_tag_to_customfield(document_id: int, source_tags: set, target_cf: str, overwrite: bool = False):
 	"""
@@ -87,6 +104,8 @@ def copy_tag_to_customfield(document_id: int, source_tags: set, target_cf: str, 
 
 if __name__ == "__main__":
 	document_id = int(os.environ["DOCUMENT_ID"])
+	#print("PROJECT_TAGS_TO_COPY: " + os.getenv("PROJECT_TAGS_TO_COPY"))
+	#print("json(PROJECT_TAGS_TO_COPY): " + str(json.loads(os.getenv("PROJECT_TAGS_TO_COPY"))))
 	source_tags = json.loads(os.getenv("PROJECT_TAGS_TO_COPY"))
 	target_cf   = os.getenv("PROJECT_CUSTOM_TARGET_FIELD")
 	overwrite   = os.getenv("PROJECT_CUSTOM_TARGET_FIELD_OVERWRITE").lower() in ("true","yes","1")

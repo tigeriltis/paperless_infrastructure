@@ -5,9 +5,13 @@ import re
 import sys
 import json
 from dotenv import load_dotenv
+ENV_FILE                     = os.path.split(os.path.split(__file__)[0])[0] + "/.env"
+PAPERLESS_PYTHON_MODULE_PATH = os.path.split(os.path.split(__file__)[0])[0]
+sys.path.append(PAPERLESS_PYTHON_MODULE_PATH)
 from paperless import *
 
-load_dotenv()
+load_dotenv(ENV_FILE)
+
 # Credentials
 ## API_AUTH_TOKEN is specific to user and has to be adjusted
 #API_AUTH_TOKEN       = "UPDATETOYOURACTUALAPITOKEN"
@@ -23,6 +27,13 @@ TAGS_TO_COPY                  = json.loads(os.getenv("TAGS_TO_COPY"))
 #CUSTOM_FIELD_TARGET           = "Project"
 CUSTOM_FIELD_TARGET           = os.getenv("CUSTOM_FIELD_TARGET")
 CUSTOM_FIELD_TARGET_OVERWRITE = os.getenv("CUSTOM_FIELD_TARGET_OVERWRITE", "False").lower() in ("true","yes","1")
+
+
+## Verify the minimum requirements to get anything done
+if API_AUTH_TOKEN == None:
+    raise Exception("API_AUTH_TOKEN not set. Quit.")
+if PAPERLESS_URL == None:
+    raise Exception("PAPERLESS_URL not set. Quit.")
 
 #######################################################
 # Main

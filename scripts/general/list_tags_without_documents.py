@@ -5,9 +5,13 @@ import re
 import sys
 import json
 from dotenv import load_dotenv
+ENV_FILE                     = path.Path(__file__).absolute().parent.parent+"/.env"
+PAPERLESS_PYTHON_MODULE_PATH = path.Path(__file__).absolute().parent.parent
+sys.path.append(PAPERLESS_PYTHON_MODULE_PATH)
 from paperless import *
 
-load_dotenv()
+load_dotenv(ENV_FILE)
+
 # Credentials
 ## API_AUTH_TOKEN is specific to user and has to be adjusted
 API_AUTH_TOKEN       = os.getenv("API_AUTH_TOKEN")
@@ -17,6 +21,12 @@ PAPERLESS_URL        = os.getenv("PAPERLESS_URL", "http://localhost:8000")
 #PAPERLESS_URL        = "http://localhost:8000" # use the internal url!
 SESSION_TIMEOUT      = float(os.getenv("SESSION_TIMEOUT", 5.0))
 
+
+## Verify the minimum requirements to get anything done
+if API_AUTH_TOKEN == None:
+    raise Exception("API_AUTH_TOKEN not set. Quit.")
+if PAPERLESS_URL == None:
+    raise Exception("PAPERLESS_URL not set. Quit.")
 #######################################################
 # Main
 #######################################################

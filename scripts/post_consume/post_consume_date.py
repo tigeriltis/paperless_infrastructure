@@ -1,16 +1,20 @@
 ## Original sources and inspiration: 
 ##   https://gist.github.com/zlovatt/3664bf0c01292b9ae78d272548411b9d
 ##   https://github.com/paperless-ngx/paperless-ngx/discussions/3454
+import os,sys
 import httpx
-import os
 import re
-import sys
 from dotenv import load_dotenv
+## split returns the path in-front and the last part of the path (can be filename or directory)
+## innersplit removes filename, outersplit removes last part of dir and thus returns parent dir
+ENV_FILE                     = os.path.split(os.path.split(__file__)[0])[0] + "/.env"
+PAPERLESS_PYTHON_MODULE_PATH = os.path.split(os.path.split(__file__)[0])[0]
+sys.path.append(PAPERLESS_PYTHON_MODULE_PATH)
 from paperless import *
 
 SCRIPT_VERSION       = "v2.1"
 
-load_dotenv()
+load_dotenv(ENV_FILE)
 
 # Credentials
 API_AUTH_TOKEN = os.getenv("API_AUTH_TOKEN")
@@ -28,7 +32,21 @@ SESSION_TIMEOUT      = 5.0
 CONSUMED_TITLE       = "Consumed_Title"
 CONSUMED_CREATEDDATE = "Consumed_Created_Date"
 ADD_TAG              = True
-MODIFIED_TAG         = "Post_Consume_Modified_" + SCRIPT_VERSION
+#MODIFIED_TAG         = "Post_Consume_Modified_" + SCRIPT_VERSION
+MODIFIED_TAG         = "PCM_" + SCRIPT_VERSION
+
+
+## Verify the minimum requirements to get anything done
+if API_AUTH_TOKEN == None:
+    raise Exception("API_AUTH_TOKEN not set. Quit.")
+if PAPERLESS_URL == None:
+    raise Exception("PAPERLESS_URL not set. Quit.")
+
+## DEBUGGING
+#print ("This '" + __file__ + "' is. Version: " + str(SCRIPT_VERSION))
+#print (".env file path: "                  + str(ENV_FILE))
+#print ("Token: "                           + str(API_AUTH_TOKEN))
+#print ("PAPERLESS_PYTHON_MODULE_PATH: "    + str(PAPERLESS_PYTHON_MODULE_PATH))
 
 #######################################################
 # Filename parsing
