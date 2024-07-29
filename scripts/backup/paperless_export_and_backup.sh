@@ -32,7 +32,7 @@ fi
 ## running export of paperless-ngx
 (cd "${PAPERLESS_DIR}"
 echo "Running the exporter of the paperless-ngx instance"
-docker compose exec webserver document_exporter /usr/src/paperless/export --use-filename-format --use-folder-prefix --zip --delete)
+docker compose exec webserver document_exporter /usr/src/paperless/export --use-filename-format --use-folder-prefix --delete)
 
 exec 1> >(tee -a "${LOGFILE}") 2>&1
 echo    "=================================="
