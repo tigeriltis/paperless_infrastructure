@@ -32,7 +32,7 @@ fi
 ## running export of paperless-ngx
 (cd "${PAPERLESS_DIR}"
 echo "Running the exporter of the paperless-ngx instance"
-docker compose exec webserver document_exporter /usr/src/paperless/export --use-filename-format --use-folder-prefix --delete)
+docker compose exec webserver document_exporter /usr/src/paperless/export --use-filename-format --use-folder-prefix --delete
 
 exec 1> >(tee -a "${LOGFILE}") 2>&1
 echo    "=================================="
@@ -45,7 +45,7 @@ echo    "== -------------------------------"
 
 ## this was the command line I used when I was backing up the whole docker volumes
 #rsync -av --exclude="consume/" --exclude="export/" --delete "${SOURCE_DIR}" "${TARGET_DIR}"
-## this is the command line I use to only backup the exported zip file, the config files and the scripts
+## this is the command line I use to only backup the exported files or zip file, the config files and the scripts
 rsync -av --exclude={"consume/","data/","media/","redisdata/"} --delete "${SOURCE_DIR}" "${TARGET_DIR}"
 
 echo    "== -------------------------------"
